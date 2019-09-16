@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 
 import Card from '../components/Card';
+import NumberContainer from '../components/NumberContainer';
 import Input from '../components/Input';
 import Colors from '../constants/color';
 
@@ -21,20 +22,27 @@ const StartGameScreen = props => {
 
     const confirmInputHandler = () => {
         const chosenNumber = parseInt(enteredValue);
-        if ( isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
-            Alert.alert('Invalid number', 'Number has to be a number between 1 and 99.', [{text:  'Okey', style: 'destructive', onPress: resetInputHandler}]);
+        if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
+            Alert.alert('Invalid number', 'Number has to be a number between 1 and 99.', [{ text: 'Okey', style: 'destructive', onPress: resetInputHandler }]);
             return;
         }
 
         setConfirmed(true);
         setSelectedNumber(chosenNumber);
         setEnteredValue("");
+        Keyboard.dismiss();
     };
 
     let confirmedOutput;
 
     if (confirmed) {
-        confirmedOutput = <Text>Chosen Number: {selectedNumber}</Text>
+        confirmedOutput = (
+            <Card style={styles.summaryContainer}>
+                <Text>You selected</Text>
+                <NumberContainer>{selectedNumber}</NumberContainer>
+                <Button title='Start Game' onPress={() => { props.onStartGame(selectedNumber)}} />
+            </Card>
+        )
     }
 
     return (
@@ -101,6 +109,10 @@ const styles = StyleSheet.create({
     input: {
         width: '50%',
         textAlign: 'center'
+    },
+    summaryContainer: {
+        marginTop: 20,
+        alignItems: 'center'
     }
 });
 
